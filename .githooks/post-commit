@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# call the semver script; ignore failure to not block commits
+bash scripts/semver-tag.sh || true
