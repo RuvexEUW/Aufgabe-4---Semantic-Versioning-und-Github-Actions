@@ -12,11 +12,9 @@ bump="none"
 # Major if breaking change or bang "feat!:"
 if echo "$commit_msg" | grep -qiE 'BREAKING[[:space:]]+CHANGE|^[a-z]+(\([^)]+\))?!:' ; then
   bump="major"
-elif echo "$commit_msg" | grep -qiE '^feat(\([^)]+\))?:' ; then
-  bump="major"
 # Minor for feat:
-# elif echo "$commit_msg" | grep -qiE '^feat(\([^)]+\))?:' ; then
-#   bump="minor"
+elif echo "$commit_msg" | grep -qiE '^feat(\([^)]+\))?:' ; then
+  bump="minor"
 # Patch for fix: or perf:
 elif echo "$commit_msg" | grep -qiE '^(fix|perf)(\([^)]+\))?:' ; then
   bump="patch"
