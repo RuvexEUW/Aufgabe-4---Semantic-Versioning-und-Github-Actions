@@ -4,24 +4,28 @@ set -euo pipefail
 git fetch --tags --force >/dev/null 2>&1 || true
 
 last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-commit_msg=$(git log -1 --pretty=%B)
+# remove possible CR on Windows
+commit_msg=$(git log -1 --pretty=%B | tr -d '\r')
 
 bump="none"
-shopt -s nocasematch
-if [[ "$commit_msg" =~ BREAKING[[:space:]]CHANGE ]] || [[ "$commit_msg" =~ ^[a-z]+(\([^)]+\))?!: ]]; then
+
+# Major if breaking change or bang "feat!:"
+if echo "$commit_msg" | grep -qiE 'BREAKING[[:space:]]+CHANGE|^[a-z]+(\([^)]+\))?!:' ; then
   bump="major"
-elif [[ "$commit_msg" =~ ^feat(\([^)]+\))?: ]]; then
+# Minor for feat:
+elif echo "$commit_msg" | grep -qiE '^feat(\([^)]+\))?:' ; then
   bump="minor"
-elif [[ "$commit_msg" =~ ^(fix|perf)(\([^)]+\))?: ]]; then
+# Patch for fix: or perf:
+elif echo "$commit_msg" | grep -qiE '^(fix|perf)(\([^)]+\))?:' ; then
   bump="patch"
 else
   echo "No release tag for commit message: $commit_msg"
   exit 0
 fi
-shopt -u nocasematch
 
 ver=${last_tag#v}
-IFS='.' read -r major minor patch <<<"${ver:-0.0.0}"
+IFS='.' read -r major minor patch <<< "${ver:-0.0.0}"
+major=${major:-0}; minor=${minor:-0}; patch=${patch:-0}
 
 case "$bump" in
   major) major=$((major+1)); minor=0; patch=0 ;;
@@ -37,7 +41,5 @@ if git rev-parse -q --verify "refs/tags/$new_tag" >/dev/null; then
 fi
 
 git tag -a "$new_tag" -m "ci: release $new_tag"
-# push right away (works locally & in CI with checkout token)
 git push origin "$new_tag"
-
 echo "Created tag $new_tag"
