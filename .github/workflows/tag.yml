@@ -36,6 +36,12 @@ jobs:
             );
             core.setOutput('ok', ok ? 'yes' : 'no');
 
+      - name: Configure git identity for tagging
+        if: steps.ready.outputs.ok == 'yes'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Run semver tagging script
         if: steps.ready.outputs.ok == 'yes'
         run: bash scripts/semver-tag.sh
