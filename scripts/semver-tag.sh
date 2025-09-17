@@ -4,7 +4,6 @@ set -euo pipefail
 git fetch --tags --force >/dev/null 2>&1 || true
 
 last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-# remove possible CR on Windows
 commit_msg=$(git log -1 --pretty=%B | tr -d '\r')
 
 bump="none"
