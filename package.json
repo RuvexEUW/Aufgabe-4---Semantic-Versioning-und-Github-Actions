@@ -12,7 +12,15 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+
+    "deploy:s3": "aws s3 sync ./dist s3://m324-s3-bucket-ruvex --delete --cache-control \"public, max-age=300\"",
+    "deploy:tag": "powershell -ExecutionPolicy Bypass -File ./scripts/tag-s3.ps1 -Bucket m324-s3-bucket-ruvex",
+    "deploy": "npm run build && npm run deploy:s3 && npm run deploy:tag",
+
+    "deploy:profile": "npm run build && aws --profile default s3 sync ./dist s3://m324-s3-bucket-ruvex --delete --cache-control \"public, max-age=300\" && powershell -ExecutionPolicy Bypass -File ./scripts/tag-s3.ps1 -Bucket m324-s3-bucket-ruvex -Profile default",
+
+    "deploy:region": "npm run build && aws --region us-east-1 s3 sync ./dist s3://m324-s3-bucket-ruvex --delete --cache-control \"public, max-age=300\" && powershell -ExecutionPolicy Bypass -File ./scripts/tag-s3.ps1 -Bucket m324-s3-bucket-ruvex -Region us-east-1"
   },
   "dependencies": {
     "vue": "^3.5.18"
