@@ -41,5 +41,13 @@ jobs:
       - name: Check AWS CLI
         run: aws --version
 
-      - name: Deploy to S3 (npm run deploy)
-        run: npm run deploy
+      - name: Build frontend
+        run: npm run build
+
+      - name: Sync dist to S3
+        run: npm run deploy:s3
+
+      - name: Tag S3 objects (public=true)
+        shell: pwsh
+        run: ./scripts/tag-s3.ps1 -Bucket m324-s3-bucket-ruvex
+
