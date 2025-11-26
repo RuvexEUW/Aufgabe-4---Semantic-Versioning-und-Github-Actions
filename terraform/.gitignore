@@ -9,3 +9,7 @@ crash.log
 override.tf
 override.tf.json
 *.log
+
+# Sensible Variablen-Dateien
+*.tfvars
+*.tfvars.json
