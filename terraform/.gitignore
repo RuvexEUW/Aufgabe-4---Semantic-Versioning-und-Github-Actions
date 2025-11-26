@@ -1,0 +1,15 @@
+# Lokale Terraform-Dateien
+.terraform/
+.terraform.lock.hcl
+
+# State Dateien (DÜRFEN NICHT ins Repo!)
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*.log
+
+# Sensible Variablen-Dateien
+*.tfvars
+*.tfvars.json
